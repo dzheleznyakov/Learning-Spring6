@@ -1,22 +1,14 @@
 package zh.learn.spring6di.controllers;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import zh.learn.spring6di.services.GreetingServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
+@SpringBootTest
 class SetterInjectedControllerTest {
 
+    @Autowired
     SetterInjectedController setterInjectedController;
-
-    @BeforeEach
-    void setUp() {
-        setterInjectedController = new SetterInjectedController();
-        setterInjectedController.setGreetingService(new GreetingServiceImpl());
-    }
 
     @Test
     void sayHello() {

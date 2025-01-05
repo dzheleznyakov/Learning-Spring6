@@ -1,7 +1,9 @@
 package zh.learn.spring6di.controllers;
 
+import org.springframework.stereotype.Controller;
 import zh.learn.spring6di.services.GreetingService;
 
+@Controller
 public class ConstructorInjectedController {
     private final GreetingService greetingService;
 
