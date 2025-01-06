@@ -1,6 +1,7 @@
 package zh.learn.spring6di.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import zh.learn.spring6di.services.GreetingService;
 
@@ -14,7 +15,9 @@ public class SetterInjectedController {
     }
 
     @Autowired
-    public void setGreetingService(GreetingService greetingService) {
+    public void setGreetingService(
+            @Qualifier("setterGreetingBean") GreetingService greetingService
+    ) {
         System.out.println("SetterInjectedController.setGreetingService");
         this.greetingService = greetingService;
     }
