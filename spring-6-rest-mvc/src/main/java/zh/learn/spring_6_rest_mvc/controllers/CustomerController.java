@@ -28,7 +28,7 @@ public class CustomerController {
     @RequestMapping(value = "/{customerId}")
     public Customer getCustomerById(
             @PathVariable("customerId") UUID id
-            ) {
+    ) {
         log.debug("Get Customer by Id - in controller");
         return customerService.getCustomerById(id);
     }
