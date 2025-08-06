@@ -1,11 +1,13 @@
 package zh.learn.spring_6_rest_mvc.model;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Builder
 @Data
 public class Beer {
     private UUID id;
