@@ -2,6 +2,7 @@ package zh.learn.spring_6_rest_mvc.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import zh.learn.spring_6_rest_mvc.model.Customer;
 
 import java.time.LocalDateTime;
@@ -87,5 +88,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteById(UUID id) {
         customerMap.remove(id);
+    }
+
+    @Override
+    public void patchById(UUID id, Customer customer) {
+        Customer existing = customerMap.get(id);
+
+        if (StringUtils.hasText(customer.getName())) {
+            existing.setName(customer.getName());
+        }
     }
 }
