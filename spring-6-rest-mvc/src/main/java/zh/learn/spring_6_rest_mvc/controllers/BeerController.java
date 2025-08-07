@@ -2,6 +2,7 @@ package zh.learn.spring_6_rest_mvc.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import zh.learn.spring_6_rest_mvc.model.Beer;
 import zh.learn.spring_6_rest_mvc.services.BeerService;
@@ -28,7 +28,12 @@ public class BeerController {
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Beer beer) {
         Beer savedBeer = beerService.saveNewBeer(beer);
-        return new ResponseEntity(HttpStatusCode.valueOf(HttpStatus.CREATED.value()));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
+        return new ResponseEntity(
+                headers,
+                HttpStatusCode.valueOf(HttpStatus.CREATED.value()));
     }
 
     @GetMapping
