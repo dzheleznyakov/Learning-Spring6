@@ -54,7 +54,7 @@ class CustomerControllerTest {
 
     @Test
     void testUpdateCustomer() throws Exception {
-        mockMvc.perform(put("/api/v1/customer/" + testCustomer.getId())
+        mockMvc.perform(put(CustomerController.CUSTOMER_PATH_ID, testCustomer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testCustomer))
@@ -71,7 +71,7 @@ class CustomerControllerTest {
 
         given(customerService.saveNewCustomer(any(Customer.class))).willReturn(testCustomerSaved);
 
-        mockMvc.perform(post("/api/v1/customer")
+        mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testCustomer))
@@ -85,7 +85,7 @@ class CustomerControllerTest {
         UUID customerId = testCustomer.getId();
         given(customerService.getCustomerById(customerId)).willReturn(testCustomer);
 
-        mockMvc.perform(get("/api/v1/customer/" + customerId)
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, customerId)
                         .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
@@ -98,7 +98,7 @@ class CustomerControllerTest {
     void testDeleteCustomer() throws Exception {
         UUID customerId = testCustomer.getId();
 
-        mockMvc.perform(delete("/api/v1/customer/" + customerId)
+        mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customerId)
                 .accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isNoContent());
@@ -115,7 +115,7 @@ class CustomerControllerTest {
         Map<String, String> customerMap = new HashMap<>();
         customerMap.put("name", "Dwight Schrutte");
 
-        mockMvc.perform(patch("/api/v1/customer/" + customerId)
+        mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, customerId)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(customerMap))

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import zh.learn.spring_6_rest_mvc.model.Beer;
 import zh.learn.spring_6_rest_mvc.services.BeerService;
@@ -24,32 +23,34 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/beer")
 public class BeerController {
+    public static final String BEER_PATH = "/api/v1/beer";
+    public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
+
     private final BeerService beerService;
 
-    @PatchMapping("/{beerId}")
+    @PatchMapping(BEER_PATH_ID)
     public ResponseEntity<Void> updateBeerPatchById(@PathVariable("beerId") UUID id, @RequestBody Beer beer) {
         beerService.patchBeerById(id, beer);
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
-    @DeleteMapping("/{beerId}")
+    @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("beerId") UUID beerId) {
         beerService.deleteById(beerId);
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
-    @PutMapping("/{beerId}")
+    @PutMapping(BEER_PATH_ID)
     public ResponseEntity<Void> updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
         beerService.updateBeerById(beerId, beer);
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
-    @PostMapping
+    @PostMapping(BEER_PATH)
     public ResponseEntity<Void> handlePost(@RequestBody Beer beer) {
         Beer savedBeer = beerService.saveNewBeer(beer);
 
@@ -60,12 +61,12 @@ public class BeerController {
                 HttpStatusCode.valueOf(HttpStatus.CREATED.value()));
     }
 
-    @GetMapping
+    @GetMapping(BEER_PATH)
     public List<Beer> listBeers() {
         return beerService.listBeers();
     }
 
-    @GetMapping(value = "/{beerId}")
+    @GetMapping(BEER_PATH_ID)
     public Beer getBeerById(
             @PathVariable("beerId") UUID beerId
     ) {
