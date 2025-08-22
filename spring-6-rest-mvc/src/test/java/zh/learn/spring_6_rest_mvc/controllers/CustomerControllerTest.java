@@ -2,6 +2,7 @@ package zh.learn.spring_6_rest_mvc.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -13,10 +14,12 @@ import zh.learn.spring_6_rest_mvc.services.CustomerServiceImpl;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -80,5 +83,20 @@ class CustomerControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(customerId.toString())))
                 .andExpect(jsonPath("$.name", is(testCustomer.getName())));
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+        UUID customerId = testCustomer.getId();
+
+        mockMvc.perform(delete("/api/v1/customer/" + customerId)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+                .andExpect(status().isNoContent());
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+        verify(customerService).deleteById(uuidArgumentCaptor.capture());
+
+        assertThat(customerId).isEqualTo(uuidArgumentCaptor.getValue());
     }
 }
