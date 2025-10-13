@@ -1,12 +1,10 @@
 package zh.learn.spring_6_rest_mvc.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler(NotFoundException.class)
+//    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity handleNOtFoundException() {
         return ResponseEntity.notFound().build();
     }
