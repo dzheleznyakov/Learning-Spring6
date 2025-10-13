@@ -15,6 +15,7 @@ import zh.learn.spring_6_rest_mvc.services.CustomerServiceImpl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,9 +82,17 @@ class CustomerControllerTest {
     }
 
     @Test
+    void testCustomerByIdNotFound() throws Exception {
+        given(customerService.getCustomerById(any(UUID.class))).willReturn(Optional.empty());
+
+        mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testGetCustomerById() throws Exception {
         UUID customerId = testCustomer.getId();
-        given(customerService.getCustomerById(customerId)).willReturn(testCustomer);
+        given(customerService.getCustomerById(customerId)).willReturn(Optional.of(testCustomer));
 
         mockMvc.perform(get(CustomerController.CUSTOMER_PATH_ID, customerId)
                         .accept(MediaType.APPLICATION_JSON)
@@ -99,8 +108,8 @@ class CustomerControllerTest {
         UUID customerId = testCustomer.getId();
 
         mockMvc.perform(delete(CustomerController.CUSTOMER_PATH_ID, customerId)
-                .accept(MediaType.APPLICATION_JSON)
-        )
+                        .accept(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isNoContent());
 
         verify(customerService).deleteById(uuidArgumentCaptor.capture());
@@ -116,10 +125,10 @@ class CustomerControllerTest {
         customerMap.put("name", "Dwight Schrutte");
 
         mockMvc.perform(patch(CustomerController.CUSTOMER_PATH_ID, customerId)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(customerMap))
-        )
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customerMap))
+                )
                 .andExpect(status().isNoContent());
 
         verify(customerService).patchById(uuidArgumentCaptor.capture(), customerArgumentCaptor.capture());
