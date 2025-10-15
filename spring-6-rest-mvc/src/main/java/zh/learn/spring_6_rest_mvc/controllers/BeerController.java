@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import zh.learn.spring_6_rest_mvc.model.Beer;
+import zh.learn.spring_6_rest_mvc.model.BeerDTO;
 import zh.learn.spring_6_rest_mvc.services.BeerService;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity<Void> updateBeerPatchById(@PathVariable("beerId") UUID id, @RequestBody Beer beer) {
+    public ResponseEntity<Void> updateBeerPatchById(@PathVariable("beerId") UUID id, @RequestBody BeerDTO beer) {
         beerService.patchBeerById(id, beer);
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
@@ -44,15 +44,15 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity<Void> updateById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity<Void> updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.updateBeerById(beerId, beer);
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
     @PostMapping(BEER_PATH)
-    public ResponseEntity<Void> handlePost(@RequestBody Beer beer) {
-        Beer savedBeer = beerService.saveNewBeer(beer);
+    public ResponseEntity<Void> handlePost(@RequestBody BeerDTO beer) {
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
@@ -62,7 +62,7 @@ public class BeerController {
     }
 
     @GetMapping(BEER_PATH)
-    public List<Beer> listBeers() {
+    public List<BeerDTO> listBeers() {
         return beerService.listBeers();
     }
 
@@ -72,7 +72,7 @@ public class BeerController {
 //    }
 
     @GetMapping(BEER_PATH_ID)
-    public Beer getBeerById(
+    public BeerDTO getBeerById(
             @PathVariable("beerId") UUID beerId
     ) {
         log.debug("Get Beer by Id - in controller");

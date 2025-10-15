@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import zh.learn.spring_6_rest_mvc.model.Customer;
+import zh.learn.spring_6_rest_mvc.model.CustomerDTO;
 import zh.learn.spring_6_rest_mvc.services.CustomerService;
 import zh.learn.spring_6_rest_mvc.services.CustomerServiceImpl;
 
@@ -45,13 +45,13 @@ class CustomerControllerTest {
     @MockitoBean
     CustomerService customerService;
 
-    private final Customer testCustomer = new CustomerServiceImpl().listCustomers().get(0);
-    private final Customer testCustomerSaved = new CustomerServiceImpl().listCustomers().get(0);
+    private final CustomerDTO testCustomer = new CustomerServiceImpl().listCustomers().get(0);
+    private final CustomerDTO testCustomerSaved = new CustomerServiceImpl().listCustomers().get(0);
 
     @Captor
     private ArgumentCaptor<UUID> uuidArgumentCaptor;
     @Captor
-    private ArgumentCaptor<Customer> customerArgumentCaptor;
+    private ArgumentCaptor<CustomerDTO> customerArgumentCaptor;
 
     @Test
     void testUpdateCustomer() throws Exception {
@@ -62,7 +62,7 @@ class CustomerControllerTest {
                 )
                 .andExpect(status().isNoContent());
 
-        verify(customerService).updateCustomerById(any(UUID.class), any(Customer.class));
+        verify(customerService).updateCustomerById(any(UUID.class), any(CustomerDTO.class));
     }
 
     @Test
@@ -70,7 +70,7 @@ class CustomerControllerTest {
         testCustomer.setId(null);
         testCustomer.setVersion(null);
 
-        given(customerService.saveNewCustomer(any(Customer.class))).willReturn(testCustomerSaved);
+        given(customerService.saveNewCustomer(any(CustomerDTO.class))).willReturn(testCustomerSaved);
 
         mockMvc.perform(post(CustomerController.CUSTOMER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
