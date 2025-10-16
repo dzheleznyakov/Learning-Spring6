@@ -1,5 +1,6 @@
 package zh.learn.spring_6_rest_mvc.bootstrap;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import zh.learn.spring_6_rest_mvc.entities.Beer;
@@ -11,14 +12,10 @@ import zh.learn.spring_6_rest_mvc.repositories.CustomerRepository;
 import java.math.BigDecimal;
 
 @Component
+@RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
-    private final CustomerRepository customerRepository;
     private final BeerRepository beerRepository;
-
-    public BootstrapData(CustomerRepository customerRepository, BeerRepository beerRepository) {
-        this.customerRepository = customerRepository;
-        this.beerRepository = beerRepository;
-    }
+    private final CustomerRepository customerRepository;
 
     @Override
     public void run(String... args) {

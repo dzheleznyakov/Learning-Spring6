@@ -20,7 +20,7 @@ class BootstrapDataTest {
 
     @BeforeEach
     void setUp() {
-        new BootstrapData(customerRepository, beerRepository).run();
+        new BootstrapData(beerRepository, customerRepository).run();
     }
 
     @Test
