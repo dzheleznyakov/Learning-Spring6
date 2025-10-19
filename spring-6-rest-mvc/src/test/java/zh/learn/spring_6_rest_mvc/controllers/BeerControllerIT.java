@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import zh.learn.spring_6_rest_mvc.entities.Beer;
+import zh.learn.spring_6_rest_mvc.mappers.BeerMapper;
 import zh.learn.spring_6_rest_mvc.model.BeerDTO;
 import zh.learn.spring_6_rest_mvc.repositories.BeerRepository;
 
@@ -25,6 +26,9 @@ class BeerControllerIT {
 
     @Autowired
     BeerRepository beerRepository;
+
+    @Autowired
+    BeerMapper beerMapper;
 
     @Test
     void testListBeers() {
@@ -74,5 +78,24 @@ class BeerControllerIT {
 
         Beer beer = beerRepository.findById(savedUUID).get();
         assertThat(beer).isNotNull();
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void testUpdateExsitingBeer() {
+        Beer beer = beerRepository.findAll().get(0);
+        BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
+        beerDTO.setId(null);
+        beerDTO.setVersion(null);
+        final String beerName = "UPDATED";
+        beerDTO.setBeerName(beerName);
+
+        ResponseEntity responseEntity = beerController.updateById(beer.getId(), beerDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
     }
 }
