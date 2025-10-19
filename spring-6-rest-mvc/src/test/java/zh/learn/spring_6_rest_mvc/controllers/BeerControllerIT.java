@@ -1,9 +1,10 @@
 package zh.learn.spring_6_rest_mvc.controllers;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import zh.learn.spring_6_rest_mvc.entities.Beer;
@@ -51,8 +52,27 @@ class BeerControllerIT {
     }
 
     @Test
-    @DisplayName("")
     void testBeerByIdNotFound() {
         assertThrows(NotFoundException.class, () -> beerController.getBeerById(UUID.randomUUID()));
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void testSaveNewBeer() {
+        BeerDTO beerDTO = BeerDTO.builder()
+                .beerName("New Beer")
+                .build();
+
+        ResponseEntity responseEntity = beerController.handlePost(beerDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
+        assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
+
+        String[] segemnts = responseEntity.getHeaders().getLocation().getPath().split("/");
+        UUID savedUUID = UUID.fromString(segemnts[4]);
+
+        Beer beer = beerRepository.findById(savedUUID).get();
+        assertThat(beer).isNotNull();
     }
 }
