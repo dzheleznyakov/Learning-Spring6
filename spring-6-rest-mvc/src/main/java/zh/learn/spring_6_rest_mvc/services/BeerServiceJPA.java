@@ -3,6 +3,8 @@ package zh.learn.spring_6_rest_mvc.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import zh.learn.spring_6_rest_mvc.entities.Beer;
 import zh.learn.spring_6_rest_mvc.mappers.BeerMapper;
 import zh.learn.spring_6_rest_mvc.model.BeerDTO;
 import zh.learn.spring_6_rest_mvc.repositories.BeerRepository;
@@ -71,7 +73,34 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void patchBeerById(UUID id, BeerDTO beer) {
+    public boolean patchBeerById(UUID id, BeerDTO beer) {
+        Optional<Beer> existingOptional = beerRepository.findById(id);
 
+        if (existingOptional.isEmpty())
+            return false;
+
+        Beer existing = existingOptional.get();
+
+        if (StringUtils.hasText(beer.getBeerName())) {
+            existing.setBeerName(beer.getBeerName());
+        }
+
+        if (beer.getBeerStyle() != null) {
+            existing.setBeerStyle(beer.getBeerStyle());
+        }
+
+        if (beer.getPrice() != null) {
+            existing.setPrice(beer.getPrice());
+        }
+
+        if (beer.getQuantityOnHand() != null) {
+            existing.setQuantityOnHand(beer.getQuantityOnHand());
+        }
+
+        if (StringUtils.hasText(beer.getUpc())) {
+            existing.setUpc(beer.getUpc());
+        }
+
+        return true;
     }
 }

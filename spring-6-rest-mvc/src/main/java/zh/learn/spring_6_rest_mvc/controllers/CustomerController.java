@@ -18,6 +18,7 @@ import zh.learn.spring_6_rest_mvc.model.CustomerDTO;
 import zh.learn.spring_6_rest_mvc.services.CustomerService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -31,20 +32,26 @@ public class CustomerController {
 
     @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> patchById(@PathVariable("customerId") UUID id, @RequestBody CustomerDTO customer) {
-        customerService.patchById(id, customer);
+        boolean successful = customerService.patchById(id, customer);
+        if (!successful)
+            throw new NotFoundException();
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
     @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> deleteById(@PathVariable("customerId") UUID id) {
-        customerService.deleteById(id);
+        boolean successful = customerService.deleteById(id);
+        if (!successful)
+            throw new NotFoundException();
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
 
     @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity<Void> updateCustomerById(@PathVariable("customerId") UUID id, @RequestBody CustomerDTO customer) {
-        customerService.updateCustomerById(id, customer);
+        Optional<CustomerDTO> optionalCustomer = customerService.updateCustomerById(id, customer);
+        if (optionalCustomer.isEmpty())
+            throw new NotFoundException();
 
         return new ResponseEntity<>(HttpStatusCode.valueOf(HttpStatus.NO_CONTENT.value()));
     }
